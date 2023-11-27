@@ -18,6 +18,7 @@ app.use(cors());
 
 app.post('/sensor', async (req, res) => {
   const { sensorId, siteId, value, timestamp } = req.body.data;
+  console.log(sensorId, siteId, value, timestamp);
 
   if (!sensorId || !siteId || !value || !timestamp) {
     return res.status(400).json({ error: 'Please provide all values.' });
