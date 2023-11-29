@@ -1,0 +1,46 @@
+.actions button {
+  margin-right: 3%;
+}
+
+.inputs::placeholder {
+  font-style: oblique;
+}
+
+.data {
+  padding: 2%;
+  margin-bottom: 5%;
+  background-color: #fefae0;
+  border-radius: 20px;
+}
+
+.map_sensor {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
+.reqs_forms {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  margin-top: 5%;
+}
+
+.name {
+  margin: 2%;
+}
+
+.forms {
+  /* width: 20%; */
+  /* margin: 0.5%; */
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.sensor_form {
+  padding: 4%;
+  margin: 2%;
+  height: fit-content;
+  border-radius: 20px;
+  background-color: #DCDCDC;
+}

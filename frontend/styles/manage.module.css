@@ -1,0 +1,16 @@
+.elements {
+  padding-bottom: 1rem;
+}
+
+.header {
+  padding: 1rem;
+  padding-right: 2rem;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  background-color: #005b97;
+}
+
+.brand {
+  font-family: "Maven Pro";
+}

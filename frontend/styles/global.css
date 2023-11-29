@@ -1,32 +1,22 @@
-html,
-body {
-  padding: 0;
-  margin: 0;
-  font-family:
-    Inter,
-    -apple-system,
-    BlinkMacSystemFont,
-    Segoe UI,
-    Roboto,
-    Oxygen,
-    Ubuntu,
-    Cantarell,
-    Fira Sans,
-    Droid Sans,
-    Helvetica Neue,
-    sans-serif;
-}
-
-a {
-  color: inherit;
-  text-decoration: none;
-}
-
-* {
-  box-sizing: border-box;
-}
+@import url('https://fonts.googleapis.com/css2?family=Maven+Pro&display=swap');
 
 img {
   max-width: 100%;
   height: auto;
+}
+
+.header {
+  padding: 1rem;
+  padding-right: 2rem;
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  background-color: #005b97;
+}
+
+.error {
+  display: flex;
+  justify-content: center;
+  font-size: x-large;
+  margin: 5%;
 }
