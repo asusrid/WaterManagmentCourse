@@ -2,10 +2,10 @@ import Head from 'next/head';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Image from 'next/image';
-import Layout from '../components/Layout.js';
+import Layout from '../components/Layout';
+import { useWeb3React } from '@web3-react/core';
 import { connectors, fetchWaterManagementContract } from '../utils/connectors';
 import { useState, useEffect } from 'react';
-import { useWeb3React } from '@web3-react/core';
 
 export default function Manage() {
   const [address, setAddress] = useState('');
