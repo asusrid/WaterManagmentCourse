@@ -11,7 +11,7 @@ import {
   fetchWaterManagementContract,
   fetchWaterTokenContract,
 } from '../utils/connectors';
-import Layout from '../components/Layout';
+import Layout from '../components/layout';
 import styles from '../styles/company.module.css';
 
 export default function Company() {
@@ -20,8 +20,22 @@ export default function Company() {
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [benchmark, setBenchmark] = useState('');
+  const [name, setName] = useState('');
+  const [saved, setSaved] = useState('');
+  const [balance, setBalance] = useState('');
   const [error, setError] = useState(true);
-  const { library, activate, deactivate, active } = useWeb3React();
+  const [requests, setRequests] = useState([]);
+  const [sensorData, setSensorData] = useState([]);
+  const [location, setLocation] = useState({});
+  const [loadingRequests, setLoadingRequests] = useState(false);
+  const { account, library, activate, deactivate, active } = useWeb3React();
+
+  const Map = Dynamic(
+    () => {
+      return import('../components/map');
+    },
+    { ssr: false }
+  );
 
   const connectWallet = () => {
     activate(connectors.injected);
@@ -63,6 +77,37 @@ export default function Company() {
     }
   };
 
+  const answerRequest = async (event) => {
+    try {
+      const data = event.target.value.split(',');
+      const signer = await library.getSigner();
+      const waterManagementContract = fetchWaterManagementContract(signer);
+      await waterManagementContract.answerRequest(data[0], data[1]);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const translateStatus = (status) => {
+    if (status == 1) {
+      return 'APPROVED';
+    }
+    if (status == 2) {
+      return 'DENIED';
+    }
+  };
+
+  const getMyDate = (date) => {
+    var myDate = new Date(parseInt(date));
+    return (
+      myDate.getDate() +
+      '/' +
+      (myDate.getMonth() + 1) +
+      '/' +
+      myDate.getFullYear()
+    );
+  };
+
   useEffect(() => {
     async function checkRole() {
       if (active) {
@@ -80,6 +125,83 @@ export default function Company() {
 
     checkRole();
   }, [active]);
+
+  useEffect(() => {
+    async function fetchRequests() {
+      try {
+        setLoadingRequests(true);
+        const signer = await library.getSigner();
+        const waterManagementContract = fetchWaterManagementContract(signer);
+        const allRequests = await waterManagementContract.fetchRequests();
+        for (let i = 0; i < allRequests.length; i++) {
+          let data = {};
+          const govData = await waterManagementContract.fetchEntityData(
+            allRequests[i].gov
+          );
+          data.gov = govData;
+          data.reqId = allRequests[i].id.toString();
+          data.status = allRequests[i].status;
+          console.log(data);
+          setRequests((requests) => [...requests, data]);
+        }
+        setLoadingRequests(false);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    async function fetchData() {
+      try {
+        const signer = await library.getSigner();
+        const waterManagementContract = fetchWaterManagementContract(signer);
+        const waterTokenContract = fetchWaterTokenContract(signer);
+        fetchSensors(waterManagementContract);
+        fetchLocations(waterManagementContract);
+        fetchWaterSaved(waterManagementContract, waterTokenContract);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    async function fetchSensors(contract) {
+      try {
+        const data = await contract.pullDataByCompany();
+        setSensorData(data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    async function fetchLocations(contract) {
+      try {
+        const sites = await contract.fetchSites();
+        let location = {};
+        for (let i = 0; i < sites.length; i++) {
+          if (sites[i].siteId in location) {
+            continue;
+          } else {
+            location[sites[i].siteId] = [sites[i].latitude, sites[i].longitude];
+          }
+        }
+        setLocation(location);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    async function fetchWaterSaved(waterContract, tokenContract) {
+      try {
+        const entityData = await waterContract.fetchEntityData(account);
+        const saved = await waterContract.fetchSaved();
+        const tokens = await tokenContract.balanceOf(account);
+        setName(entityData[1]);
+        setSaved(saved.toNumber());
+        setBalance(tokens.toNumber());
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    if (active && !error) {
+      fetchRequests();
+      fetchData();
+    }
+  }, [error]);
 
   return (
     <div>
@@ -249,7 +371,7 @@ export default function Company() {
                         required
                         className={styles.inputs}
                         type="text"
-                        value={latitute}
+                        value={latitude}
                         onChange={(event) => setLatitute(event.target.value)}
                         placeholder="Enter latitude"
                       />

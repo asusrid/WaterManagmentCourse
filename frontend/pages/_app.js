@@ -1,3 +1,5 @@
+import Head from 'next/head';
+import Script from 'next/script';
 import { Web3ReactProvider } from '@web3-react/core';
 import { ethers } from 'ethers';
 import '../styles/global.css';
@@ -9,8 +11,23 @@ function getLibrary(provider) {
 
 export default function App({ Component, pageProps }) {
   return (
-    <Web3ReactProvider getLibrary={getLibrary}>
-      <Component {...pageProps} />
-    </Web3ReactProvider>
+    <>
+      <Head>
+        <link
+          rel="stylesheet"
+          href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+          integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+          crossOrigin=""
+        />
+        <Script
+          src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+          integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+          crossOrigin=""
+        ></Script>
+      </Head>
+      <Web3ReactProvider getLibrary={getLibrary}>
+        <Component {...pageProps} />
+      </Web3ReactProvider>
+    </>
   );
 }

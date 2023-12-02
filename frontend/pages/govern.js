@@ -3,7 +3,7 @@ import Image from 'next/image';
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Table from 'react-bootstrap/Table';
-import Layout from '../components/Layout';
+import Layout from '../components/layout';
 import { useWeb3React } from '@web3-react/core';
 import { useEffect, useState } from 'react';
 import { connectors, fetchWaterManagementContract } from '../utils/connectors';
@@ -30,7 +30,7 @@ export default function Govern() {
     const companyAddress = event.target.value;
     const signer = await library.getSigner();
     const waterManagementContract = fetchWaterManagementContract(signer);
-    const sensorData = await waterManagementContract.pullDataByCompany(
+    const sensorData = await waterManagementContract.pullDataByGovernment(
       companyAddress
     );
     setSensorData(sensorData);
